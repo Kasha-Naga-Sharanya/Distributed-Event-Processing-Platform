@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: event-platform
+    folder: Event Platform
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

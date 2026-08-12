@@ -1,0 +1,31 @@
+groups:
+  - name: event-platform
+    rules:
+      - alert: KafkaConsumerLagHigh
+        expr: max(kafka_consumer_lag) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kafka consumer lag is high
+      - alert: EventErrorRateHigh
+        expr: sum(rate(events_processed_total{status="dead_letter"}[5m])) / clamp_min(sum(rate(events_accepted_total[5m])), 1) > 0.05
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Dead-letter rate exceeds 5 percent
+      - alert: CircuitBreakerOpen
+        expr: max(circuit_breaker_state) > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: An external dependency circuit is open
+      - alert: DeadLetterQueueGrowing
+        expr: sum(increase(events_processed_total{status="dead_letter"}[15m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Dead-letter queue is growing

@@ -1,0 +1,32 @@
+{
+  "title": "Event Platform",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "panels": [
+    {
+      "title": "Accepted events/sec",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [{"expr": "sum(rate(events_accepted_total[5m]))", "legendFormat": "accepted"}]
+    },
+    {
+      "title": "Processing latency p95",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [{"expr": "histogram_quantile(0.95, sum(rate(event_processing_seconds_bucket[5m])) by (le))", "legendFormat": "p95"}]
+    },
+    {
+      "title": "Consumer lag",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "targets": [{"expr": "max(kafka_consumer_lag) by (topic, group)", "legendFormat": "{{topic}}/{{group}}"}]
+    },
+    {
+      "title": "Dead letters",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "targets": [{"expr": "sum(rate(events_processed_total{status=\"dead_letter\"}[5m]))", "legendFormat": "dead letter"}]
+    }
+  ]
+}
